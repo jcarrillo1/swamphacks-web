@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Clarifai from 'clarifai';
 import { Button } from 'react-bootstrap';
 import ImageContainer from './ImageContainer';
+import ResultsContainer from './ResultsContainer';
 import FormInput from './FormInput';
 
 class ImageUrlPage extends Component {
@@ -9,7 +10,7 @@ class ImageUrlPage extends Component {
 		imageUrl: '',
 		queryUrl: '',
 		fetching: false,
-		result: {},
+		results: [],
 		error: false,
 	}
 	onChange = (e) => {
@@ -26,10 +27,11 @@ class ImageUrlPage extends Component {
 		this.props.api.models.predict(Clarifai.GENERAL_MODEL, queryUrl)
 			.then(response => {
 				const { concepts } = response.outputs[0].data;
+				// return concepts.map(concept => concept.name);
 				this.setState({
 					fetching: false,
 					imageUrl: queryUrl,
-					result: concepts.map(concept => concept.name),
+					results: concepts.map(concept => concept.name),
 				})
 			})
 			.catch(err => {
@@ -41,7 +43,7 @@ class ImageUrlPage extends Component {
 			});
 	}
 	render() {
-		const { imageUrl } = this.state;
+		const { imageUrl, results } = this.state;
 		return (
 			<div>
 				<form onSubmit={this.onSubmit}>
@@ -61,6 +63,9 @@ class ImageUrlPage extends Component {
 				</form>
 				{imageUrl && (
 					<ImageContainer imageUrl={imageUrl} />
+				)}
+				{results && results.length > 0 && (
+					<ResultsContainer results={results} />
 				)}
 			</div>
 		);
