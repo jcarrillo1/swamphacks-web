@@ -10,7 +10,10 @@
     "clarifai": "^2.1.0-dev",
     "react": "^15.4.2",
     "react-bootstrap": "^0.30.7",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "react-slick": "^0.14.5",
+    "react-sound": "^0.5.2",
+    "slick-carousel": "^1.6.0"
   },
   "scripts": {
     "start": "react-scripts start",

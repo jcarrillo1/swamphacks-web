@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Sound from 'react-sound';
 import Clarifai from 'clarifai';
 import axios from 'axios';
 import { Button,
@@ -55,8 +56,6 @@ class ImageUrlPage extends Component {
 								const { items } = tracks;
 								if (items && items.length > 0) {
 									trackUrl = items[0].preview_url;
-									const audioObject = new Audio(trackUrl)
-									audioObject.play();
 								}
 								this.setState({
 									trackUrl,
@@ -120,6 +119,12 @@ class ImageUrlPage extends Component {
             {imageUrls && imageUrls.length > 0 && <Row>
    				<Panel><CarouselContainer imageUrls={imageUrls} /></Panel>
 				</Row>}
+				{trackUrl && (
+					<Sound
+						url={trackUrl}
+						playStatus={Sound.status.PLAYING}
+					/>
+				)}
 			</div>
 		);
 	}

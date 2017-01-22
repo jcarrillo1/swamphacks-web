@@ -1,15 +1,22 @@
 import React from 'react';
-import { Carousel, Image } from 'react-bootstrap';
-import './CarouselContainer.css';
+import Slider from 'react-slick';
+// import './CarouselContainer.css';
+
+const carouselSettings = {
+	// className: "slider variable-width",
+	speed: 200,
+	slideToShow: 1,
+	slidesToScroll: 1,
+	adaptiveHeight: true,
+// variableWidth: true
+};
 
 const CarouselContainer = ({ imageUrls }) => (
-  <Carousel>
+  <Slider {...carouselSettings}>
 		{imageUrls && imageUrls.map((imageUrl, key) => (
-			<Carousel.Item key={key} >
-	      <Image width={700} height={500} alt="900x500" src={imageUrl}/>
-	    </Carousel.Item>
+	    <img key={key} src={imageUrl}/>
 		))}
-  </Carousel>
+  </Slider>
 );
 
 export default CarouselContainer;

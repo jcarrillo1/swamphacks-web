@@ -63,8 +63,6 @@ class ImageUploadPage extends Component {
 								const { items } = tracks;
 								if (items && items.length > 0) {
 									trackUrl = items[0].preview_url;
-									const audioObject = new Audio(trackUrl)
-									audioObject.play();
 								}
 								this.setState({
 									trackUrl,
@@ -97,7 +95,7 @@ class ImageUploadPage extends Component {
 			});
 	}
 	render() {
-		const { imageUrls } = this.state;
+		const { imageUrls, trackUrl } = this.state;
 		return (
          <div>
             <Row>
@@ -113,7 +111,7 @@ class ImageUploadPage extends Component {
          						bsStyle="primary"
          						type="submit"
          						disabled={this.state.fetching}>
-         						Find a Background Song
+         						Search Gifs
          					</Button>
          				</form>
                   </FormGroup>
@@ -122,6 +120,7 @@ class ImageUploadPage extends Component {
                <Row>
 				      <Panel><CarouselContainer imageUrls={imageUrls} /></Panel>
 						</Row>}
+						
 
          </div>
 		);
