@@ -48,10 +48,34 @@ class ImageUploadPage extends Component {
 					.then(response => response.data.data)
 					.then(data => data.map(objs => objs.images.original.url))
 					.then(urls => {
-						this.setState({
-							fetching: false,
-							imageUrls: urls.slice(0, 10),
-						});
+						axios.get('https://api.spotify.com/v1/search', {
+							params: {
+								q: `${concepts[0]}`,
+								type: 'track',
+							}
+						})
+							.then(result => result.data.tracks)
+							.then(tracks => {
+								let trackUrl = '';
+								const { items } = tracks;
+								if (items && items.length > 0) {
+									trackUrl = items[0].preview_url;
+									const audioObject = new Audio(trackUrl)
+									audioObject.play();
+								}
+								this.setState({
+									trackUrl,
+									fetching: false,
+									imageUrls: urls.slice(0, 10),
+								});
+							})
+							.catch(err => {
+								console.log(err);
+								this.setState({
+									fetching: false,
+									error: true,
+								})
+							})
 					})
 					.catch(err => {
 						console.log('error in giphy');
@@ -59,7 +83,7 @@ class ImageUploadPage extends Component {
 							fetching: false,
 							error: true,
 						})
-					})
+					});
 			})
 			.catch(err => {
 				console.log(err);
