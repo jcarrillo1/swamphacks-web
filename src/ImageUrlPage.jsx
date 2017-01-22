@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import Sound from 'react-sound';
 import Clarifai from 'clarifai';
-import axios from 'axios';
-import { Button,
-         InputGroup,
-         ControlLabel,
-         FormGroup,
-         Col,
-         Panel,
-         Row} from 'react-bootstrap';
+import {
+	Button,
+	ControlLabel,
+	FormGroup,
+	Col,
+	Panel,
+	Row,
+} from 'react-bootstrap';
+import {
+	giphySearch,
+	spotifySearch,
+} from './api';
 import CarouselContainer from './CarouselContainer';
 import FormInput from './FormInput';
 
@@ -31,53 +35,27 @@ class ImageUrlPage extends Component {
 	onSubmit = (e) => {
 		e.preventDefault();
 		const { queryUrl } = this.state;
-		this.setState({ queryUrl: '', fetching: true });
+		this.setState({
+			queryUrl: '',
+			fetching: true,
+			trackUrl: '',
+			imageUrls: [],
+			results: [],
+			error: false,
+		});
 		this.props.api.models.predict(Clarifai.GENERAL_MODEL, queryUrl)
 			.then(response => {
 				const { concepts } = response.outputs[0].data;
 				return concepts.map(concept => concept.name);
 			})
-			.then(concepts => {
-				const searchUrl = `http://api.giphy.com/v1/gifs/search?q=${concepts[0]}+${concepts[1]}+${concepts[2]}+meme&api_key=dc6zaTOxFJmzC `
-				console.log(searchUrl);
-				axios.get(searchUrl)
-					.then(response => response.data.data)
-					.then(data => data.map(objs => objs.images.original.url))
-					.then(urls => {
-						axios.get('https://api.spotify.com/v1/search', {
-							params: {
-								q: `${concepts[0]}`,
-								type: 'track',
-							}
-						})
-							.then(result => result.data.tracks)
-							.then(tracks => {
-								let trackUrl = '';
-								const { items } = tracks;
-								if (items && items.length > 0) {
-									trackUrl = items[0].preview_url;
-								}
-								this.setState({
-									trackUrl,
-									fetching: false,
-									imageUrls: urls.slice(0, 10),
-								});
-							})
-							.catch(err => {
-								console.log(err);
-								this.setState({
-									fetching: false,
-									error: true,
-								})
-							})
-					})
-					.catch(err => {
-						console.log('error in giphy');
-						this.setState({
-							fetching: false,
-							error: true,
-						})
-					})
+			.then(async (concepts) => {
+				const trackUrl = await spotifySearch(concepts);
+				const imageUrls = await giphySearch(concepts);
+				this.setState({
+					trackUrl,
+					fetching: false,
+					imageUrls: imageUrls.slice(0, 10),
+				});
 			})
 			.catch(err => {
 				console.log(err);
@@ -94,24 +72,22 @@ class ImageUrlPage extends Component {
             <Row className="inputRow">
    				<form onSubmit={this.onSubmit}>
                   <FormGroup>
-                     <Col xs={6}>
+                     <Col md={6}>
                         <ControlLabel>Enter URL</ControlLabel>
-                        <InputGroup>
             					<FormInput
             						label="Image Url"
             						id="imageSearch"
             						value={this.state.queryUrl}
             						onChange={this.onChange}
             					/>
-                           <InputGroup.Addon className="btn-wrapper">
             					<Button
+												className="fileUploadImg"
             						bsStyle="primary"
             						type="submit"
-            						disabled={this.state.fetching}
+            						disabled={this.state.fetching || !this.state.queryUrl}
             					>
             						Search Gifs
-            					</Button></InputGroup.Addon>
-                        </InputGroup>
+            					</Button>
                      </Col>
                   </FormGroup>
    				</form>
