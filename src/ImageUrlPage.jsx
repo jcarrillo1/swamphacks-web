@@ -92,7 +92,7 @@ class ImageUrlPage extends Component {
 		const { imageUrls, trackUrl } = this.state;
 		return (
 			<div>
-            <Row>
+            <Row className="inputRow">
    				<form onSubmit={this.onSubmit}>
                   <FormGroup>
                      <Col xs={6}>
@@ -117,9 +117,9 @@ class ImageUrlPage extends Component {
                   </FormGroup>
    				</form>
             </Row>
-            <Row>
-   				<Panel>{imageUrls && imageUrls.length > 0 && <CarouselContainer imageUrls={imageUrls} />}</Panel>
-            </Row>
+            {imageUrls && imageUrls.length > 0 && <Row>
+   				<Panel><CarouselContainer imageUrls={imageUrls} /></Panel>
+				</Row>}
 			</div>
 		);
 	}

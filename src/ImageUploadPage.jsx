@@ -118,9 +118,10 @@ class ImageUploadPage extends Component {
          				</form>
                   </FormGroup>
                </Row>
+							 {imageUrls && imageUrls.length > 0 &&
                <Row>
-				      <Panel>{imageUrls && imageUrls.length > 0 && <CarouselContainer imageUrls={imageUrls} />}</Panel>
-               </Row>
+				      <Panel><CarouselContainer imageUrls={imageUrls} /></Panel>
+						</Row>}
 
          </div>
 		);
