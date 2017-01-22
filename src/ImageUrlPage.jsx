@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import Clarifai from 'clarifai';
+import axios from 'axios';
 import { Button } from 'react-bootstrap';
-import ImageContainer from './ImageContainer';
-import ResultsContainer from './ResultsContainer';
+import CarouselContainer from './CarouselContainer';
 import FormInput from './FormInput';
 
 class ImageUrlPage extends Component {
   state = {
-		imageUrl: '',
+		imageUrls: [],
 		queryUrl: '',
 		fetching: false,
 		results: [],
@@ -27,12 +27,27 @@ class ImageUrlPage extends Component {
 		this.props.api.models.predict(Clarifai.GENERAL_MODEL, queryUrl)
 			.then(response => {
 				const { concepts } = response.outputs[0].data;
-				// return concepts.map(concept => concept.name);
-				this.setState({
-					fetching: false,
-					imageUrl: queryUrl,
-					results: concepts.map(concept => concept.name),
-				})
+				return concepts.map(concept => concept.name);
+			})
+			.then(concepts => {
+				const searchUrl = `http://api.giphy.com/v1/gifs/search?q=${concepts[0]}+${concepts[1]}+${concepts[2]}+meme&api_key=dc6zaTOxFJmzC `
+				console.log(searchUrl);
+				axios.get(searchUrl)
+					.then(response => response.data.data)
+					.then(data => data.map(objs => objs.images.original.url))
+					.then(urls => {
+						this.setState({
+							fetching: false,
+							imageUrls: urls.slice(0, 10),
+						});
+					})
+					.catch(err => {
+						console.log('error in giphy');
+						this.setState({
+							fetching: false,
+							error: true,
+						})
+					})
 			})
 			.catch(err => {
 				console.log(err);
@@ -43,7 +58,7 @@ class ImageUrlPage extends Component {
 			});
 	}
 	render() {
-		const { imageUrl, results } = this.state;
+		const { imageUrls } = this.state;
 		return (
 			<div>
 				<form onSubmit={this.onSubmit}>
@@ -58,15 +73,10 @@ class ImageUrlPage extends Component {
 						type="submit"
 						disabled={this.state.fetching}
 					>
-						Find Background Song
+						Search Gifs
 					</Button>
 				</form>
-				{imageUrl && (
-					<ImageContainer imageUrl={imageUrl} />
-				)}
-				{results && results.length > 0 && (
-					<ResultsContainer results={results} />
-				)}
+				{imageUrls && imageUrls.length > 0 && <CarouselContainer imageUrls={imageUrls} />}
 			</div>
 		);
 	}
