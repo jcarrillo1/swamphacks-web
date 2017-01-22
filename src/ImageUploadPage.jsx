@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import Clarifai from 'clarifai';
 import axios from 'axios';
-import { Button } from 'react-bootstrap';
+import { Button,
+         FormGroup,
+         Row,
+         Panel } from 'react-bootstrap';
 import CarouselContainer from './CarouselContainer';
 import FormInput from './FormInput';
 
@@ -96,23 +99,30 @@ class ImageUploadPage extends Component {
 	render() {
 		const { imageUrls } = this.state;
 		return (
-			<div>
-				<form onSubmit={this.onSubmit}>
-					<FormInput
-						label="Image Upload"
-						id="imageUpload"
-						type="file"
-						onChange={this.handleImageChange}
-					/>
-					<Button
-						bsStyle="primary"
-						type="submit"
-						disabled={this.state.fetching}>
-						Find a Background Song
-					</Button>
-				</form>
-				{imageUrls && imageUrls.length > 0 && <CarouselContainer imageUrls={imageUrls} />}
-			</div>
+         <div>
+            <Row>
+   			      <FormGroup id="uploadForm">
+         				<form onSubmit={this.onSubmit}>
+         					<FormInput
+         						label="Image Upload"
+         						id="imageUpload"
+         						type="file"
+         						onChange={this.handleImageChange}
+         					/>
+         					<Button className="fileUploadImg"
+         						bsStyle="primary"
+         						type="submit"
+         						disabled={this.state.fetching}>
+         						Find a Background Song
+         					</Button>
+         				</form>
+                  </FormGroup>
+               </Row>
+               <Row>
+				      <Panel>{imageUrls && imageUrls.length > 0 && <CarouselContainer imageUrls={imageUrls} />}</Panel>
+               </Row>
+
+         </div>
 		);
 	}
 }

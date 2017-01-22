@@ -18,11 +18,12 @@ const api = new Clarifai.App(
 
 const App = () => (
 	<div className="container">
-		<Tabs defaultActiveKey={1}  id="mainPage">
-			<Tab eventKey={1} title="Image Url">
+		<div id="banner">Memes From The Swamp</div>
+		<Tabs defaultActiveKey={1}  id="mainPage" animation={true}>
+			<Tab className="my-tabs" eventKey={1} title="Image Url">
 				<ImageUrlPage api={api} />
 			</Tab>
-			<Tab eventKey={2} title="Image Upload">
+			<Tab className="my-tabs" eventKey={2} title="Image Upload">
 				<ImageUploadPage api={api} />
 			</Tab>
 		</Tabs>

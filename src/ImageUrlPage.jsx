@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import Clarifai from 'clarifai';
 import axios from 'axios';
-import { Button } from 'react-bootstrap';
+import { Button,
+         InputGroup,
+         ControlLabel,
+         FormGroup,
+         Col,
+         Panel,
+         Row} from 'react-bootstrap';
 import CarouselContainer from './CarouselContainer';
 import FormInput from './FormInput';
 
@@ -86,23 +92,34 @@ class ImageUrlPage extends Component {
 		const { imageUrls, trackUrl } = this.state;
 		return (
 			<div>
-				<form onSubmit={this.onSubmit}>
-					<FormInput
-						label="Image Url"
-						id="imageSearch"
-						value={this.state.queryUrl}
-						onChange={this.onChange}
-					/>
-					<Button
-						bsStyle="primary"
-						type="submit"
-						disabled={this.state.fetching}
-					>
-						Search Gifs
-					</Button>
-				</form>
-				{imageUrls && imageUrls.length > 0 && <CarouselContainer imageUrls={imageUrls} />}
-				{trackUrl}
+            <Row>
+   				<form onSubmit={this.onSubmit}>
+                  <FormGroup>
+                     <Col xs={6}>
+                        <ControlLabel>Enter URL</ControlLabel>
+                        <InputGroup>
+            					<FormInput
+            						label="Image Url"
+            						id="imageSearch"
+            						value={this.state.queryUrl}
+            						onChange={this.onChange}
+            					/>
+                           <InputGroup.Addon className="btn-wrapper">
+            					<Button
+            						bsStyle="primary"
+            						type="submit"
+            						disabled={this.state.fetching}
+            					>
+            						Search Gifs
+            					</Button></InputGroup.Addon>
+                        </InputGroup>
+                     </Col>
+                  </FormGroup>
+   				</form>
+            </Row>
+            <Row>
+   				<Panel>{imageUrls && imageUrls.length > 0 && <CarouselContainer imageUrls={imageUrls} />}</Panel>
+            </Row>
 			</div>
 		);
 	}
